@@ -18,14 +18,15 @@ class Employer(db.Model):
     industry = db.Column(db.String, nullable=False)
     location = db.Column(db.String, nullable=False)
     contact_email = db.Column(db.String, nullable=False)
-    jobs = db.relationship('Job', backref='employer', lazy=True)
-    
+    jobs = db.relationship('Jobs', backref='employer', lazy=True)
     job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', backref=db.backref('employers', lazy=True))
 
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
 
 
+    
+    
 class JobSeekers(db.Model):
     __tablename__ = 'job_seekers_table'
 
@@ -66,15 +67,17 @@ class JobSeekersDetails(db.Model):
 
 class Jobs(db.Model):
     __tablename__ = 'jobs_table'
-
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     salary = db.Column(db.Integer, nullable=False)
     employer_id = db.Column(db.Integer, db.ForeignKey('employers_table.id'), nullable=False)
+    employer = db.relationship('Employer', backref='jobs', lazy=True)
 
     def __repr__(self):
         return f"Job with the ID of {self.id}, title of {self.title} created successfully."
+
+
 
 
 class EmployerJobSeekersConnector(db.Model):
