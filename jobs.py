@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api,Resource,reqparse
+from models import db,Job
 jobs_bp = Blueprint('jobs', __name__,url_prefix='/jobs')
 api_bp=Api(jobs_bp)
 job_parser = reqparse.RequestParser()

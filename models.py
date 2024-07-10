@@ -2,15 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
 
-db = SQLAlchemy(app, metadata=metadata)
+db = SQLAlchemy( metadata=metadata)
 
 
 class Employer(db.Model):
@@ -22,7 +19,8 @@ class Employer(db.Model):
     location = db.Column(db.String, nullable=False)
     contact_email = db.Column(db.String, nullable=False)
     jobs = db.relationship('Job', backref='employer', lazy=True)
-    job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers')
+    
+    job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', backref=db.backref('employers', lazy=True))
 
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
@@ -36,9 +34,7 @@ class JobSeekers(db.Model):
     last_name = db.Column(db.String, nullable=False)
     middle_name = db.Column(db.String)
     email = db.Column(db.String, nullable=False)
-    phone_number = db.Column(db.Integer, nullable=False)
-    details = db.relationship('JobSeekersDetails', uselist=False, backref='job_seeker')
-
+    phone_number = db.Column(db.String, nullable=False)
     def __repr__(self):
         return f"Job Seeker with the ID of {self.id}, and name of {self.first_name} {self.last_name} successfully created."
 
@@ -51,16 +47,22 @@ class JobSeekersDetails(db.Model):
     skills = db.Column(db.String, nullable=False)
     education_level = db.Column(db.String, nullable=False)
     work_experience = db.Column(db.String, nullable=False)
-    desired_salary = db.Column(db.String, nullable=False)
-    availability = db.Column(db.String, nullable=False)
     portfolio_url = db.Column(db.String, nullable=False)
-    job_seeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), nullable=False)
+    jobseeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), unique=True, nullable=False)
+
+    # Establish back reference to JobSeekers
+    job_seeker = db.relationship('JobSeekers', back_populates='details')
+    employers = db.relationship('Employer', secondary='employer_job_seekers', backref=db.backref('job_seekers', lazy=True))
 
     def __repr__(self):
         return "Job Seeker's details added successfully."
 
 
-class Job(db.Model):
+    def __repr__(self):
+        return "Job Seeker's details added successfully."
+
+
+class Jobs(db.Model):
     __tablename__ = 'jobs_table'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -84,6 +86,3 @@ class EmployerJobSeekersConnector(db.Model):
         return f"EmployerJobSeekersConnector between employer ID {self.employer_id} and job seeker ID {self.job_seeker_id} created successfully."
 
 
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
