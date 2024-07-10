@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from sqlalchemy_serializer import SerializerMixin
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -13,7 +14,7 @@ class Employer(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     company_name = db.Column(db.String, nullable=False)
-    industry = db.Column(db.string, nullable=False)
+    industry = db.Column(db.String, nullable=False)
     location = db.Column(db.String, nullable=False)
     contact_email = db.Column(db.String, nullable=False)
 
@@ -21,7 +22,7 @@ def __repr__(self):
     return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
 
 
-class JobSeekers(db.MOdel, SerializerMixin):
+class JobSeekers(db.Model, SerializerMixin):
     __tablename__ = 'job_seekers_table'
 
 
@@ -54,6 +55,7 @@ class JobSeekersDetails (db.Model, SerializerMixin):
 
 class EmployerJobSeekersConnector(db.Model, SerializerMixin):
     __tablename__ = "employer_job_seekers"
+    id = db.Column(db.Integer, primary_key=True)
 
     employers_id = db.Column(db.Integer, db.ForeignKey("employers.id"))
     job_seekers = db.Column(db.Integer, db.ForeignKey("JobSeekers.id"))
