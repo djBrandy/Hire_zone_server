@@ -35,6 +35,8 @@ class JobSeekers(db.Model):
     middle_name = db.Column(db.String)
     email = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
+    employers = db.relationship('Employer', secondary='employer_job_seekers', backref=db.backref('job_seekers', lazy=True))
+
     def __repr__(self):
         return f"Job Seeker with the ID of {self.id}, and name of {self.first_name} {self.last_name} successfully created."
 
