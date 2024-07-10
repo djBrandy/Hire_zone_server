@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api,Resource,reqparse
-from models import db,Jobs
+from models import db,Jobs,Employer
 jobs_bp = Blueprint('jobs', __name__,url_prefix='/jobs')
 api_bp=Api(jobs_bp)
 job_parser = reqparse.RequestParser()
@@ -8,6 +8,7 @@ job_parser.add_argument('title', type=str, required=True, help='title is require
 job_parser.add_argument('description', type=str, required=True, help='description is required')
 job_parser.add_argument('location', type=str, required=True, help='location is required')
 job_parser.add_argument('requirements', type=str, required=True, help='requirements is required')
+job_parser.add_argument('employer_id', type=int, required=True, help='employer_id is required')
 
 
 class Job(Resource):
@@ -55,3 +56,15 @@ class JobsList(Resource):
 
 
 api_bp.add_resource(JobsList, '/joblist')
+
+class JobEmployers(Resource):
+    def get(self,employer_id):
+        job = Jobs.query.get(id)
+        if not job:
+            return {'message': 'job not found'}, 404
+        employer = Employer.query.get(job.employer_id)
+        return {'id': employer.id, 'company_name':employer.company_name, 'industry': employer.industry,'contact_email': employer.contact_email}
+    
+
+
+api_bp.add_resource(JobEmployers, '/<int:employer_id>/job')

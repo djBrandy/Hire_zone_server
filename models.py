@@ -18,14 +18,13 @@ class Employer(db.Model):
     industry = db.Column(db.String, nullable=False)
     location = db.Column(db.String, nullable=False)
     contact_email = db.Column(db.String, nullable=False)
-    jobs = db.relationship('Jobs', backref='employer', lazy=True)
-    job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', backref=db.backref('employers', lazy=True))
+
+    # Relationship with Jobs model
+    jobs = db.relationship('Jobs', back_populates='employer', lazy=True)
+    job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', back_populates='employers', lazy=True)
 
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
-
-
-    
     
 class JobSeekers(db.Model):
     __tablename__ = 'job_seekers_table'
@@ -36,11 +35,13 @@ class JobSeekers(db.Model):
     middle_name = db.Column(db.String)
     email = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
-    employers = db.relationship('Employer', secondary='employer_job_seekers', backref=db.backref('job_seekers', lazy=True))
+    details=db.relationship('JobSeekersDetails',back_populates='job_seeker',lazy=True)
+
+    # Relationship with Employers
+    employers = db.relationship('Employer', secondary='employer_job_seekers', back_populates='job_seekers', lazy=True)
 
     def __repr__(self):
         return f"Job Seeker with the ID of {self.id}, and name of {self.first_name} {self.last_name} successfully created."
-
 
 class JobSeekersDetails(db.Model):
     __tablename__ = 'job_seekers_details'
@@ -51,14 +52,12 @@ class JobSeekersDetails(db.Model):
     education_level = db.Column(db.String, nullable=False)
     work_experience = db.Column(db.String, nullable=False)
     portfolio_url = db.Column(db.String, nullable=False)
-    jobseeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), unique=True, nullable=False)
+    jobseeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), nullable=False, unique=True)
 
     # Establish back reference to JobSeekers
     job_seeker = db.relationship('JobSeekers', back_populates='details')
-    employers = db.relationship('Employer', secondary='employer_job_seekers', backref=db.backref('job_seekers', lazy=True))
 
-    def __repr__(self):
-        return "Job Seeker's details added successfully."
+    
 
 
     def __repr__(self):
@@ -67,17 +66,18 @@ class JobSeekersDetails(db.Model):
 
 class Jobs(db.Model):
     __tablename__ = 'jobs_table'
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     salary = db.Column(db.Integer, nullable=False)
     employer_id = db.Column(db.Integer, db.ForeignKey('employers_table.id'), nullable=False)
-    employer = db.relationship('Employer', backref='jobs', lazy=True)
+
+    # Relationship with Employer model
+    employer = db.relationship('Employer', back_populates='jobs', lazy=True)
 
     def __repr__(self):
         return f"Job with the ID of {self.id}, title of {self.title} created successfully."
-
-
 
 
 class EmployerJobSeekersConnector(db.Model):
@@ -89,5 +89,3 @@ class EmployerJobSeekersConnector(db.Model):
 
     def __repr__(self):
         return f"EmployerJobSeekersConnector between employer ID {self.employer_id} and job seeker ID {self.job_seeker_id} created successfully."
-
-
