@@ -1,10 +1,15 @@
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
 from models import db, Employer  # Adjust this import based on your project structure
+from flask_cors import CORS
+
 
 # Create a Blueprint for employers
 employer_bp = Blueprint('employer_bp', __name__, url_prefix='/employer')
 api_bp = Api(employer_bp)
+
+
+CORS(employer_bp)
 
 #  request parser for employer data
 employer_parser = reqparse.RequestParser()
