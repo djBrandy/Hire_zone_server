@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api,Resource,reqparse
 from models import db,JobSeekers
+from flask_cors import CORS
 
 jobseeker_bp = Blueprint('jobsekeer_bp',__name__,url_prefix='/jobseekers')
 api_bp=Api(jobseeker_bp)
@@ -10,6 +11,8 @@ jobseeker_parser.add_argument('middle_name', type=str, required=True, help='midd
 jobseeker_parser.add_argument('last_name', type=str, required=True, help='last_name is required')
 jobseeker_parser.add_argument('email', type=str, required=True, help='email is required')
 jobseeker_parser.add_argument('phone_number', type=str, required=True, help='phone_number is required')
+
+CORS(jobseeker_bp)
 
 
 class Jobseeker(Resource):

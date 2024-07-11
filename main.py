@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from models import db
 from employers import  employer_bp
 from jobseekers import jobseeker_bp
+from jobseekersdetails import details_bp
+from jobs import jobs_bp
 
 
 
@@ -14,6 +16,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Hire-zone.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.register_blueprint(employer_bp)
 app.register_blueprint(jobseeker_bp)
+app.register_blueprint(details_bp)
+app.register_blueprint(jobs_bp)
+
+
 db.init_app(app)
 migrate = Migrate(app=app, db=db)
 

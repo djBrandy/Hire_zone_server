@@ -1,6 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api,Resource,reqparse
 from models import db,Jobs,Employer
+from flask_cors import CORS
+
 jobs_bp = Blueprint('jobs', __name__,url_prefix='/jobs')
 api_bp=Api(jobs_bp)
 job_parser = reqparse.RequestParser()
@@ -8,6 +10,11 @@ job_parser.add_argument('title', type=str, required=True, help='title is require
 job_parser.add_argument('description', type=str, required=True, help='description is required')
 job_parser.add_argument('salary', type=str, required=True, help='salary is required')
 job_parser.add_argument('employer_id', type=str, required=True, help='employer_id is required')
+
+
+
+CORS(jobs_bp)
+
 
 
 class Job(Resource):
