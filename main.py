@@ -6,6 +6,7 @@ from employers import  employer_bp
 from jobseekers import jobseeker_bp
 
 
+
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Hire-zone.db'
 
@@ -15,9 +16,6 @@ app.register_blueprint(employer_bp)
 app.register_blueprint(jobseeker_bp)
 db.init_app(app)
 migrate = Migrate(app=app, db=db)
-
-
-
 
 
 if __name__ == '__main__':

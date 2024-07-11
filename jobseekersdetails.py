@@ -27,6 +27,7 @@ class JobSeekersDetailsResource(Resource):
             return {'message': 'Job Seeker details not found.'}, 404
         return details.to_dict()
     
+    
     def put(self, jobseeker_id):
         data = details_parser.parse_args()
         details = JobSeekersDetails.query.filter_by(jobseeker_id=jobseeker_id).first()

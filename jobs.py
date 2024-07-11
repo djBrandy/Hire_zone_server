@@ -6,25 +6,24 @@ api_bp=Api(jobs_bp)
 job_parser = reqparse.RequestParser()
 job_parser.add_argument('title', type=str, required=True, help='title is required')
 job_parser.add_argument('description', type=str, required=True, help='description is required')
-job_parser.add_argument('location', type=str, required=True, help='location is required')
-job_parser.add_argument('requirements', type=str, required=True, help='requirements is required')
-job_parser.add_argument('employer_id', type=int, required=True, help='employer_id is required')
+job_parser.add_argument('salary', type=str, required=True, help='salary is required')
+job_parser.add_argument('employer_id', type=str, required=True, help='employer_id is required')
 
 
 class Job(Resource):
     def get(self,id):
         job = Jobs.query.get_or_404(id)
-        return {'id': job.id,'title':job.title,"description":job.description,"location":job.location,"requirements":job.requirements}
+        return {'id': job.id,'title':job.title,"description":job.description,"salary":job.salary,"employer_id":job.employer_id}
     
     def put(self,id):
         data = job_parser.parse_args()
         job = Jobs.query.get_or_404(id)
         job.title = data['title']
         job.description = data['description']
-        job.location = data['location']
-        job.requirements = data['requirements']
+        job.salary = data['salary']
+        job.employer_id = data['employer_id']
         db.session.commit()
-        return {'id': job.id,'title':job.title,"description":job.description,"location":job.location,"requirements":job.requirements}
+        return {'id': job.id,'title':job.title,"description":job.description,"salary":job.salary,"employer_id":job.employer_id}
     
     def delete(self,id):
         job = Jobs.query.get_or_404(id)
@@ -39,11 +38,11 @@ api_bp.add_resource(Job, '/<int:id>')
 class JobsList(Resource):
     def get(self):
         jobs = Jobs.query.all()
-        return [{'id': job.id,'title':job.title,"description":job.description,"location":job.location,"requirements":job.requirements} for job in jobs]
+        return [{'id': job.id,'title':job.title,"description":job.description,"salary":job.salary,"employer_id":job.employer_id} for job in jobs]
     
     def post(self):
         data = job_parser.parse_args()
-        new_job = Jobs(title=data['title'], description=data['description'], location=data['location'], requirements=data['requirements'])
+        new_job = Jobs(title=data['title'], description=data['description'], salary=data['salary'], employer_id=data['employer_id'])
         db.session.add(new_job)
         db.session.commit()
         return {"message": "Job successfully created"}

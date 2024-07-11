@@ -87,5 +87,6 @@ class EmployerJobSeekersConnector(db.Model):
     employer_id = db.Column(db.Integer, db.ForeignKey('employers_table.id'), nullable=False)
     job_seeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), nullable=False)
 
+
     def __repr__(self):
         return f"EmployerJobSeekersConnector between employer ID {self.employer_id} and job seeker ID {self.job_seeker_id} created successfully."

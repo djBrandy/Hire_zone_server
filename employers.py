@@ -84,5 +84,6 @@ class EmployersListResource(Resource):
         return {'message': 'Employer deleted successfully'}
 
 
+
 # Register EmployersListResource under /employer/newemployers
 api_bp.add_resource(EmployersListResource, '/newemployers')
