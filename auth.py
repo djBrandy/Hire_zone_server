@@ -4,13 +4,15 @@ from models import User, db
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, JWTManager, create_refresh_token, jwt_required, current_user
 from functools import wraps
+from flask_cors import CORS
+
 
 auth_bp = Blueprint('auth_bp', __name__, url_prefix='/auth')
 bcrypt = Bcrypt()
 jwt = JWTManager()
 auth_api = Api(auth_bp)
-# auth
-# RBAC
+
+CORS(auth_bp)
 
 
 def allow(*allowed_roles):
