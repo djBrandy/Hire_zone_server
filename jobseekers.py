@@ -52,7 +52,7 @@ class JobseekersList(Resource):
     
     def post(self):
         data = jobseeker_parser.parse_args()
-        new_jobseeker = Jobseeker(first_name=data['first_name'], middle_name=data['middle_name'], last_name=data['last_name'], email=data['email'], phone_number=data['phone_number'])
+        new_jobseeker = JobSeekers(first_name=data['first_name'], middle_name=data['middle_name'], last_name=data['last_name'], email=data['email'], phone_number=data['phone_number'])
         db.session.add(new_jobseeker)
         db.session.commit()
         return {"message": "Jobseeker successfully created"}
