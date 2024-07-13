@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import MetaData
 
 
@@ -41,6 +41,8 @@ class Employer(db.Model):
     # Relationship with Jobs model
     jobs = db.relationship('Jobs', back_populates='employer', lazy=True)
     job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', back_populates='employers', lazy=True)
+    user = db.relationship('User', back_populates='employer', uselist=False)
+
 
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
