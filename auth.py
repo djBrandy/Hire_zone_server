@@ -36,9 +36,9 @@ def user_lookup_callback(_jwt_header, jwt_data):
 
 
 register_args = reqparse.RequestParser()
-register_args.add_argument('email')
-register_args.add_argument('password')
-register_args.add_argument('username')
+register_args.add_argument('email',type=str,required=True,help='email is required')
+register_args.add_argument('password',type=int,required=True,help='password is required')
+register_args.add_argument('username',type=str,required=True,help='username is required')
 
 
 login_args = reqparse.RequestParser()
@@ -51,13 +51,13 @@ class Register(Resource):
     def post(self):
 
         data = register_args.parse_args()
-        hashed_password = bcrypt.generate_password_hash(data.get('password'))
-        new_user = User(email=data.get('email'), username=data.get(
-            'username'), password=hashed_password)
+        hashed_password = bcrypt.generate_password_hash(data.get('username'))
+        new_user = User(email=data.get('password'), username=data.get(
+            'email'), password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
 
-        return {"msg": 'user created successfully'}
+        return {"msg": 'User created successfully'}
 
 
 class Login(Resource):

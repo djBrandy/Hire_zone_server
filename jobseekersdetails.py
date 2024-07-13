@@ -41,4 +41,4 @@ class JobSeekersDetailsResource(Resource):
         db.session.commit()
         return details.to_dict()
     
-api.add_resource(JobSeekersDetailsResource, '/JobSeekerDetails')
+api.add_resource(JobSeekersDetailsResource, '/')
