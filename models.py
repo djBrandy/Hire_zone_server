@@ -2,15 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
 
-db = SQLAlchemy(app, metadata=metadata)
+db = SQLAlchemy( metadata=metadata)
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -29,6 +27,8 @@ class User(db.Model):
     def __repr__(self):
         return f"User {self.username} with email {self.email} created successfully."
 
+
+
 class Employer(db.Model):
     __tablename__ = 'employers_table'
 
@@ -38,15 +38,15 @@ class Employer(db.Model):
     location = db.Column(db.String, nullable=False)
     contact_email = db.Column(db.String, nullable=False)
 
-    # Relationship with User model
-    user = db.relationship('User', back_populates='employer', uselist=False)
-
     # Relationship with Jobs model
     jobs = db.relationship('Jobs', back_populates='employer', lazy=True)
     job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', back_populates='employers', lazy=True)
+    user = db.relationship('User', back_populates='employer', uselist=False)
+
 
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
+    
 
 class JobSeekers(db.Model):
     __tablename__ = 'job_seekers_table'
@@ -65,6 +65,7 @@ class JobSeekers(db.Model):
     def __repr__(self):
         return f"Job Seeker with the ID of {self.id}, and name of {self.first_name} {self.last_name} successfully created."
 
+
 class JobSeekersDetails(db.Model):
     __tablename__ = 'job_seekers_details'
 
@@ -81,6 +82,8 @@ class JobSeekersDetails(db.Model):
     def __repr__(self):
         return "Job Seeker's details added successfully."
 
+
+
 class Jobs(db.Model):
     __tablename__ = 'jobs_table'
 
@@ -94,6 +97,9 @@ class Jobs(db.Model):
 
     def __repr__(self):
         return f"Job with the ID of {self.id}, title of {self.title} created successfully."
+
+
+
 
 class EmployerJobSeekersConnector(db.Model):
     __tablename__ = 'employer_job_seekers'
