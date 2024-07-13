@@ -6,6 +6,7 @@ from employers import  employer_bp
 from jobseekers import jobseeker_bp
 from jobseekersdetails import details_bp
 from jobs import jobs_bp
+from auth import auth_bp
 
 
 
@@ -18,6 +19,7 @@ app.register_blueprint(employer_bp)
 app.register_blueprint(jobseeker_bp)
 app.register_blueprint(details_bp)
 app.register_blueprint(jobs_bp)
+app.register_blueprint(auth_bp)
 
 
 db.init_app(app)
