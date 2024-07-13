@@ -8,6 +8,7 @@ from jobseekersdetails import details_bp
 from jobs import jobs_bp
 from auth import auth_bp
 from auth import jwt
+from form import form_bp
 
 
 
@@ -24,6 +25,8 @@ app.register_blueprint(jobseeker_bp)
 app.register_blueprint(details_bp)
 app.register_blueprint(jobs_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(form_bp)
+
 jwt.init_app(app)
 
 db.init_app(app)
