@@ -39,7 +39,9 @@ register_args = reqparse.RequestParser()
 register_args.add_argument('email',type=str,required=True,help='email is required')
 register_args.add_argument('password',type=int,required=True,help='password is required')
 register_args.add_argument('username',type=str,required=True,help='username is required')
-
+register_args.add_argument('role',type=str,required=True,help='role is required')
+register_args.add_argument('employer_id',type=int)
+register_args.add_argument('job_seeker_id',type=int)
 
 login_args = reqparse.RequestParser()
 login_args.add_argument('email')
@@ -53,7 +55,8 @@ class Register(Resource):
         data = register_args.parse_args()
         hashed_password = bcrypt.generate_password_hash(data.get('username'))
         new_user = User(email=data.get('password'), username=data.get(
-            'email'), password=hashed_password)
+            'email'), password=hashed_password, role=data.get('role'), employer_id=data.get('employer_id'), 
+            job_seeker_id=data.get('job_seeker_id'))
         db.session.add(new_user)
         db.session.commit()
 
