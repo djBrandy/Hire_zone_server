@@ -17,7 +17,7 @@ class User(db.Model):
     username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    role = db.Column(db.String, nullable=False)  # either 'job_seeker' or 'employer'
+    role = db.Column(db.String, nullable=False)  
     employer_id = db.Column(db.Integer, db.ForeignKey('employers_table.id'), nullable=True)
     job_seeker_id = db.Column(db.Integer, db.ForeignKey('job_seekers_table.id'), nullable=True)
 

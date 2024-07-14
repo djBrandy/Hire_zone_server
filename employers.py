@@ -1,23 +1,21 @@
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
-from models import db, Employer  # Adjust this import based on your project structure
+from models import db, Employer
 from flask_cors import CORS
 
-
-# Create a Blueprint for employers
+# Blueprint setup
 employer_bp = Blueprint('employer_bp', __name__, url_prefix='/employer')
 api_bp = Api(employer_bp)
 
-
+# Enable CORS for the blueprint
 CORS(employer_bp)
 
-#  request parser for employer data
+# Request parser for employer data
 employer_parser = reqparse.RequestParser()
 employer_parser.add_argument('company_name', type=str, required=True, help='Company name is required')
 employer_parser.add_argument('industry', type=str, required=True, help='Industry is required')
 employer_parser.add_argument('location', type=str, required=True, help='Location is required')
 employer_parser.add_argument('contact_email', type=str, required=True, help='Contact email is required')
-
 
 class EmployerResource(Resource):
     def get(self, id):
@@ -52,10 +50,8 @@ class EmployerResource(Resource):
         db.session.commit()
         return {'message': 'Employer deleted successfully'}
 
-
-# Register EmployerResource under /employer/<int:id>
+# Register the EmployerResource with the API
 api_bp.add_resource(EmployerResource, '/<int:id>')
-
 
 class EmployersListResource(Resource):
     def get(self):
@@ -80,15 +76,7 @@ class EmployersListResource(Resource):
         )
         db.session.add(new_employer)
         db.session.commit()
-        return {"message": "Employer successfully created"}
-    
-    def delete(self, id):
-        employer = Employer.query.get_or_404(id)
-        db.session.delete(employer)
-        db.session.commit()
-        return {'message': 'Employer deleted successfully'}
-
-
+        return {"message": "Employer successfully created"}, 201
 
 # Register EmployersListResource under /employer/newemployers
 api_bp.add_resource(EmployersListResource, '/newemployers')
