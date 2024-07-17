@@ -1,7 +1,6 @@
 ##### Add form for applyin for jobs
 ### Needs another frontend component
 
-
 from flask import Blueprint
 from flask_restful import Api,Resource,reqparse
 from models import db,JobSeekers
