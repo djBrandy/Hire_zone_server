@@ -1,18 +1,14 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import MetaData
-from flask_cors import CORS
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
 
-db = SQLAlchemy(app, metadata=metadata)
-CORS(app)
+db = SQLAlchemy( metadata=metadata)
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -31,6 +27,8 @@ class User(db.Model):
     def __repr__(self):
         return f"User {self.username} with email {self.email} created successfully."
 
+
+
 class Employer(db.Model):
     __tablename__ = 'employers_table'
 
@@ -45,8 +43,10 @@ class Employer(db.Model):
     job_seekers = db.relationship('JobSeekers', secondary='employer_job_seekers', back_populates='employers', lazy=True)
     user = db.relationship('User', back_populates='employer', uselist=False)
 
+
     def __repr__(self):
         return f"Employer with the ID of {self.id}, company name of {self.company_name} and the industry of {self.industry} successfully created."
+    
 
 class JobSeekers(db.Model):
     __tablename__ = 'job_seekers_table'
@@ -65,6 +65,7 @@ class JobSeekers(db.Model):
     def __repr__(self):
         return f"Job Seeker with the ID of {self.id}, and name of {self.first_name} {self.last_name} successfully created."
 
+
 class JobSeekersDetails(db.Model):
     __tablename__ = 'job_seekers_details'
 
@@ -81,6 +82,8 @@ class JobSeekersDetails(db.Model):
     def __repr__(self):
         return "Job Seeker's details added successfully."
 
+
+
 class Jobs(db.Model):
     __tablename__ = 'jobs_table'
 
@@ -95,6 +98,9 @@ class Jobs(db.Model):
     def __repr__(self):
         return f"Job with the ID of {self.id}, title of {self.title} created successfully."
 
+
+
+
 class EmployerJobSeekersConnector(db.Model):
     __tablename__ = 'employer_job_seekers'
 
@@ -104,48 +110,3 @@ class EmployerJobSeekersConnector(db.Model):
 
     def __repr__(self):
         return f"EmployerJobSeekersConnector between employer ID {self.employer_id} and job seeker ID {self.job_seeker_id} created successfully."
-
-# API Endpoints
-@app.route('/jobseekers', methods=['POST'])
-def create_jobseeker():
-    data = request.json
-    new_jobseeker = JobSeekers(
-        first_name=data['first_name'],
-        last_name=data['last_name'],
-        middle_name=data.get('middle_name', ''),
-        email=data['email'],
-        phone_number=data['phone_number']
-    )
-    db.session.add(new_jobseeker)
-    db.session.commit()
-    return jsonify({"id": new_jobseeker.id, "message": "Jobseeker successfully created"}), 201
-
-@app.route('/details', methods=['POST'])
-def create_jobseeker_details():
-    data = request.form
-    academic_certificate = request.files.get('academic_certificate')
-    cv = request.files.get('cv')
-
-    academic_certificate_filename = f"uploads/academic_certificate_{data['jobseeker_id']}.pdf"
-    cv_filename = f"uploads/cv_{data['jobseeker_id']}.pdf"
-
-    academic_certificate.save(academic_certificate_filename)
-    cv.save(cv_filename)
-
-    new_details = JobSeekersDetails(
-        resume_url=data['resume_url'],
-        skills=data['skills'],
-        education_level=data['education_level'],
-        work_experience=data['work_experience'],
-        portfolio_url=data['portfolio_url'],
-        jobseeker_id=data['jobseeker_id'],
-        academic_certificate=academic_certificate_filename,
-        cv=cv_filename
-    )
-    db.session.add(new_details)
-    db.session.commit()
-    return jsonify({"message": "Job Seeker details added successfully."}), 201
-
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
